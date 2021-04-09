@@ -1,0 +1,38 @@
+1.1、Webpack 的构建流程主要有哪些环节？如果可以请尽可能详尽的描述 Webpack 打包的整个过程。
+安装webpack初始化项目，新建文件webpack.config.js，配置项目入口、输出路径、开发模式等，配置不同资源处理的loader，配置plugin，执行打包命令
+通过webpack.config.js配置文件的entry入口配置开始查找项目依赖资源，根据配置的loader解析不同的资源，输出打包后的资源。在webpack打包过程中不同阶段根据配置的plugin做一些额外的工作
+
+1.2、Loader 和 Plugin 有哪些不同？请描述一下开发 Loader 和 Plugin 的思路。
+
+Loader：用于对模块源码的转换，loader描述了webpack如何处理非javascript模块，并且在buld中引入这些依赖。loader可以将文件从不同的语言转换为JavaScript，或者将内联图像转换为data URL
+开发思路：通过module.exports导出一个函数，该函数默认参数一个参数source(即要处理的资源文件)，在函数体中处理资源(loader里配置响应的loader后)，通过return返回最终打包后的结果(这里返回的结果需为字符串形式)
+
+Plugin：目的在于解决loader无法实现的其他事，从打包优化和压缩，到重新定义环境变量，功能强大到可以用来处理各种各样的任务。
+开发思路：通过钩子机制实现，插件必须是一个函数或包含apply方法的对象，在方法体内通过webpack提供的API获取资源做响应处理，将处理完的资源通过webpack提供的方法返回该资源
+
+
+2.1、使用 Webpack 实现 Vue 项目打包任务
+webpack.common.js
+
+安装webpack webpack-cli webpack-dev-server
+配置webpack.common.js入口文件entry:'./src/main.js',输出路径
+配置对应的loader，plugin,
+安装vue-loader的依赖来对vue文件进行解析和转换,
+安装less-loader来对less进行解析和编译
+安装css-loader和style-loader来对css文件和vue中的style标签进行解析
+babel-loader 和@vue/cli-plugin-babel解析js文件，
+url-loader来处理图片
+安装一个htm-webpack-plugin，用于指定html模板来生成我们的index.html
+
+webpack.dev.js
+安装webpack-dev-server
+安装一个webpack-merge来合并配置
+需要生成对应的sourceMap来方便进行代码错误的查找
+
+webpack.prod.js
+
+关闭sourceMap来防止源代码外泄
+对css文件和js文件的压缩和分包
+
+修改package.json里的启动和打包命令
+
